@@ -12,6 +12,15 @@ const createStore = (reducer, initialState) => {
   return { getState, dispatch, subscribe };
 };
 
+const combineReducers = reducers => {
+  return (state, action) => {
+    return Object.keys(reducers).reduce((newState, key) => {
+      newState[key] = reducers[key](state[key], action);
+      return newState;
+    }, {});
+  };
+};
+
 // Reducer
 const counterCatReducer = (state = 0, action) => {
   switch (action.type) {
@@ -97,7 +106,8 @@ const CounterDog = props => {
   );
 };
 
-const store = createStore(counterCatReducer, { cat: 0, dog: 0 });
+const reducer = combineReducers({ cat: counterCatReducer, dog: counterDogReducer });
+const store = createStore(reducer, { cat: 0, dog: 0 });
 const render = () => {
   ReactDOM.render(<App count={store.getState()} />, document.getElementById('root'));
 };
