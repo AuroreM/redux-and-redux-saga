@@ -1,40 +1,10 @@
-const createStore = (reducer, initialState) => {
-  let state = initialState;
-  const getState = () => state;
-
-  let listeners = [];
-  const subscribe = listener => listeners.push(listener);
-
-  const dispatch = action => {
-    state = reducer(state, action);
-    listeners.forEach(listener => listener());
-  };
-  return { getState, dispatch, subscribe };
-};
-
-const combineReducers = reducers => {
-  return (state, action) => {
-    return Object.keys(reducers).reduce((newState, key) => {
-      newState[key] = reducers[key](state[key], action);
-      return newState;
-    }, {});
-  };
-};
-
 // Reducer
-const counterCatReducer = (state = 0, action) => {
+const imageReducer = (state, action) => {
   switch (action.type) {
-    case 'ADD_CAT':
-      return state + 1;
-    default:
-      return state;
-  }
-};
-
-const counterDogReducer = (state = 0, action) => {
-  switch (action.type) {
-    case 'ADD_DOG':
-      return state + 1;
+    case 'INCREMENT_COUNT':
+      return { ...state, count: state.count + 1 };
+    case 'SET_IMAGE_LINK':
+      return { ...state, link: action.payload.link };
     default:
       return state;
   }
@@ -54,7 +24,6 @@ const App = props => {
       </div>
       <div class="counters-container">
         <CounterCat {...props} />
-        <CounterDog {...props} />
       </div>
       <div class="footer">
         <img class="twitter-logo" src="twitter.png" />
@@ -69,47 +38,26 @@ const App = props => {
 const CounterCat = props => {
   return (
     <div class="counter-container">
-      <img class="animal" src="cat.png" />
+      <img class="image" src={props.image.link} />
       <button
         class="button"
         onClick={() => {
-          return store.dispatch({ type: 'ADD_CAT' });
+          return store.dispatch({ type: 'INCREMENT_COUNT' });
         }}
       >
-        ADD ONE CAT
+        DISPLAY AND COUNT IMAGES FROM UNSPLASH
       </button>
       <div class="result">
-        <p class="text"> {props.count.cat}</p>
-        <img class="small-animal" src="cat.png" />
+        <p class="text"> {props.image.count} 🌇</p>
       </div>
     </div>
   );
 };
 
-const CounterDog = props => {
-  return (
-    <div class="counter-container">
-      <img class="animal" src="dog.png" />
-      <button
-        class="button"
-        onClick={() => {
-          return store.dispatch({ type: 'ADD_DOG' });
-        }}
-      >
-        ADD ONE DOG
-      </button>
-      <div class="result">
-        <p class="text"> {props.count.dog}</p>
-        <img class="small-animal" src="dog.png" />
-      </div>
-    </div>
-  );
-};
-
-const reducer = combineReducers({ cat: counterCatReducer, dog: counterDogReducer });
-const store = createStore(reducer, { cat: 0, dog: 0 });
+const { createStore } = Redux;
+const store = createStore(imageReducer, { count: 0, link: '' });
 const render = () => {
-  ReactDOM.render(<App count={store.getState()} />, document.getElementById('root'));
+  ReactDOM.render(<App image={store.getState()} />, document.getElementById('root'));
 };
 
 store.subscribe(render);
