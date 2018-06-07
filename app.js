@@ -22,6 +22,15 @@ const counterCatReducer = (state = 0, action) => {
   }
 };
 
+const counterDogReducer = (state = 0, action) => {
+  switch (action.type) {
+    case 'ADD_DOG':
+      return state + 1;
+    default:
+      return state;
+  }
+};
+
 //UI
 const App = props => {
   return (
@@ -61,7 +70,7 @@ const CounterCat = props => {
         ADD ONE CAT
       </button>
       <div class="result">
-        <p class="text"> {props.count}</p>
+        <p class="text"> {props.count.cat}</p>
         <img class="small-animal" src="cat.png" />
       </div>
     </div>
@@ -81,14 +90,14 @@ const CounterDog = props => {
         ADD ONE DOG
       </button>
       <div class="result">
-        <p class="text"> {props.count}</p>
+        <p class="text"> {props.count.dog}</p>
         <img class="small-animal" src="dog.png" />
       </div>
     </div>
   );
 };
 
-const store = createStore(counterCatReducer, 0);
+const store = createStore(counterCatReducer, { cat: 0, dog: 0 });
 const render = () => {
   ReactDOM.render(<App count={store.getState()} />, document.getElementById('root'));
 };
