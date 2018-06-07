@@ -1,3 +1,17 @@
+const createStore = (reducer, initialState) => {
+  let state = initialState;
+  const getState = () => state;
+
+  let listeners = [];
+  const subscribe = listener => listeners.push(listener);
+
+  const dispatch = action => {
+    state = reducer(state, action);
+    listeners.forEach(listener => listener());
+  };
+  return { getState, dispatch, subscribe };
+};
+
 // Reducer
 const counterCatReducer = (state = 0, action) => {
   switch (action.type) {
@@ -53,7 +67,6 @@ const CounterCat = props => {
   );
 };
 
-const { createStore } = Redux;
 const store = createStore(counterCatReducer, 0);
 const render = () => {
   ReactDOM.render(<App count={store.getState()} />, document.getElementById('root'));
