@@ -54,8 +54,23 @@ const CounterCat = props => {
   );
 };
 
-const { createStore } = Redux;
-const store = createStore(imageReducer, { count: 0, link: '' });
+const image = store => {
+  return next => {
+    return action => {
+      if (action.type !== 'INCREMENT_COUNT') {
+        return next(action);
+      }
+
+      fetch('https://source.unsplash.com/random').then(response => {
+        store.dispatch({ type: 'SET_IMAGE_LINK', payload: { link: response.url } });
+        return next(action);
+      });
+    };
+  };
+};
+
+const { createStore, applyMiddleware } = Redux;
+const store = createStore(imageReducer, { count: 0, link: '' }, applyMiddleware(image));
 const render = () => {
   ReactDOM.render(<App image={store.getState()} />, document.getElementById('root'));
 };
