@@ -36,6 +36,7 @@ const App = props => {
       </div>
       <div class="counters-container">
         <CounterCat {...props} />
+        <CounterDog {...props} />
       </div>
       <div class="footer">
         <img class="twitter-logo" src="twitter.png" />
@@ -62,6 +63,26 @@ const CounterCat = props => {
       <div class="result">
         <p class="text"> {props.count}</p>
         <img class="small-animal" src="cat.png" />
+      </div>
+    </div>
+  );
+};
+
+const CounterDog = props => {
+  return (
+    <div class="counter-container">
+      <img class="animal" src="dog.png" />
+      <button
+        class="button"
+        onClick={() => {
+          return store.dispatch({ type: 'ADD_DOG' });
+        }}
+      >
+        ADD ONE DOG
+      </button>
+      <div class="result">
+        <p class="text"> {props.count}</p>
+        <img class="small-animal" src="dog.png" />
       </div>
     </div>
   );
